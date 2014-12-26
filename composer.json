@@ -1,0 +1,20 @@
+{
+    "name": "bscheshir/hyphenation-grid",
+    "description": "Yii widget "multiline row" for zii.widgets.grid.CGridView",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "BSCheshir",
+            "email": "bscheshir@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "http://github.com/bscheshirwork/hyphenation-grid"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    }
+}
