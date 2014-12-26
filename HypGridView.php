@@ -11,16 +11,16 @@ class HypGridView extends CGridView
     /**
      * Переносить каждые n столбцов
     */
-//    public $hyphenationOnCount=null;
+    public $hyphenationOnCount=null;
 
     /**
      * Проверка на переносить/нетЪ
     */
     public function isHyphenation($num)
     {
-//        if (!empty($this->hyphenationOnCount))
-//            return (bool)($num % $this->hyphenationOnCount);
-//        else
+        if (!empty($this->hyphenationOnCount))
+            return !($num % $this->hyphenationOnCount);
+        else
         if(!empty($this->hyphenationColumns)){
             if(!$this->hyphenationColumns instanceof Traversable && !is_array($this->hyphenationColumns))
                 $this->hyphenationColumns=(array)$this->hyphenationColumns;
@@ -33,6 +33,79 @@ class HypGridView extends CGridView
         else
             return false;
     }
+    
+    /**
+     * Renders the table header.
+     */
+    public function renderTableHeader() {
+        if (!$this->hideHeader) {
+            echo "<thead>\n";
+
+            if ($this->filterPosition === self::FILTER_POS_HEADER)
+                $this->renderFilter();
+
+            echo "<tr>\n";
+            $i = 0;
+            foreach ($this->columns as $column){
+                if ($this->isHyphenation($i++))
+                     echo "</tr>\n<tr>\n";
+                $column->renderHeaderCell();
+            }
+            echo "</tr>\n";
+
+            if ($this->filterPosition === self::FILTER_POS_BODY)
+                $this->renderFilter();
+
+            echo "</thead>\n";
+        }
+        elseif ($this->filter !== null && ($this->filterPosition === self::FILTER_POS_HEADER || $this->filterPosition === self::FILTER_POS_BODY)) {
+            echo "<thead>\n";
+            $this->renderFilter();
+            echo "</thead>\n";
+        }
+    }
+
+    /**
+     * Renders the filter.
+     * @since 1.1.1
+     */
+    public function renderFilter() {
+        if ($this->filter !== null) {
+            echo "<tr class=\"{$this->filterCssClass}\">\n";
+            $i = 0;
+            foreach ($this->columns as $column){
+                if ($this->isHyphenation($i++))
+                     echo "</tr>\n<tr class=\"{$this->filterCssClass}\">\n";
+                $column->renderFilterCell();
+            }
+            echo "</tr>\n";
+        }
+    }
+
+    /**
+     * Renders the table footer.
+     */
+    public function renderTableFooter() {
+        $hasFilter = $this->filter !== null && $this->filterPosition === self::FILTER_POS_FOOTER;
+        $hasFooter = $this->getHasFooter();
+        if ($hasFilter || $hasFooter) {
+            echo "<tfoot>\n";
+            if ($hasFooter) {
+                echo "<tr>\n";
+                $i = 0;
+                foreach ($this->columns as $column){
+                    if ($this->isHyphenation($i++))
+                        echo "</tr>\n<tr>\n";
+                    $column->renderFooterCell();
+                }
+                echo "</tr>\n";
+            }
+            if ($hasFilter)
+                $this->renderFilter();
+            echo "</tfoot>\n";
+        }
+    }
+
     /**
      * Renders a table body row.
      * @param integer $row the row number (zero-based).
