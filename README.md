@@ -37,20 +37,25 @@ $controller = $this;
 		'ccy',
 		'ccy_name_ru',
 		[
-		  'name'=>'buy',
-		  'type' => 'raw',
-		  'value'=>'$data->buy/10000',
-		  'headerHtmlOptions'=>['colspan'=>'2'],
-		  'htmlOptions'=>['colspan'=>'2'],
-	  ],
+			'name'=>'buy',
+			'type' => 'raw',
+			'value'=>'$data->buy/10000',
+			'headerHtmlOptions'=>['colspan'=>'2'],
+			'htmlOptions'=>['colspan'=>'2'],
+		],
+		[
+			'name'=>'sortOrder',
+			'evaluateHtmlOptions'=>true,
+			'htmlOptions'=>['id'=>'"ordering_{$data->id}"'],		
+		],
 		'unit',
 		'date',
 		[
-		  'name'=>'somename',
-		  'header'=>'someheader',
-      'value' => function($data, $row) use ($controller) {
-          return $controller->renderPartial('trait/__someone', array('data' => $data), true);
-      },		  
+			'name'=>'somename',
+			'header'=>'someheader',
+			'value' => function($data, $row) use ($controller) {
+				return $controller->renderPartial('trait/__someone', array('data' => $data), true);
+			},		  
 		],
 	],
 ]); ?>
