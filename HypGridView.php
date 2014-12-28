@@ -12,6 +12,66 @@ class HypGridView extends CGridView
      * Переносить каждые n столбцов
     */
     public $hyphenationOnCount=null;
+    
+    /**
+     * rowHtmlOptionsExpression для перенесённой строки
+    */
+    public $hyphenationRowHtmlOptionsExpression=null;
+    
+    /**
+     * rowCssClassExpression для перенесённой строки
+    */
+    public $hyphenationRowCssClassExpression=null;
+    
+    /**
+     * Отключить перечисление по списку стилей (стиль перенесённой = стилю начала строки)
+    */
+    public $hyphenationDisableRowCssClass=true;
+    
+    /**
+     * Перезаписывать $htmlOptions['class'] или смешивать с вычесленным для начала строки
+    */
+    public $hyphenationRewriteClass=false;
+    
+    /**
+     * применить опции к перенесённой строке
+    */
+    public function HyphenationHtmlOptions($row,$col,$htmlOptions){
+        
+        if (!empty($this->hyphenationOnCount)){
+            $htmlOptionsExpression=$this->hyphenationRowHtmlOptionsExpression;
+            $cssClassExpression=$this->hyphenationRowCssClassExpression;
+        }else{
+            $htmlOptionsExpression=$this->hyphenationRowHtmlOptionsExpression[$col];
+            $cssClassExpression=$this->hyphenationRowCssClassExpression[$col];
+        }
+        if($htmlOptionsExpression!==null)
+        {
+            $data=$this->dataProvider->data[$row];
+            $options=$this->evaluateExpression($htmlOptionsExpression,array('row'=>$row,'data'=>$data));
+            if(is_array($options)){
+                if(isset($htmlOptions['class']) && isset($options['class']) && !$this->hyphenationRewriteClass)
+                    $options['class'].=' '.$htmlOptions['class'];
+                $htmlOptions = CMap::mergeArray($htmlOptions,$options);
+            }
+        }
+        
+        if($cssClassExpression!==null)
+        {
+            $data=$this->dataProvider->data[$row];
+            $class=$this->evaluateExpression($cssClassExpression,array('row'=>$row,'data'=>$data));
+        }
+        elseif(!$this->hyphenationDisableRowCssClass && is_array($this->rowCssClass) && ($n=count($this->rowCssClass))>0)
+            $class=$this->rowCssClass[$row%$n];
+        if(!empty($class))
+        {
+            if(isset($htmlOptions['class']))
+                $htmlOptions['class'].=' '.$class;
+            else
+                $htmlOptions['class']=$class;
+        }
+        return $htmlOptions;
+    }
 
     /**
      * Проверка на переносить/нетЪ
@@ -47,7 +107,7 @@ class HypGridView extends CGridView
             echo "<tr>\n";
             $i = 0;
             foreach ($this->columns as $column){
-                if ($this->isHyphenation($i++))
+                if ($this->isHyphenation(++$i))
                      echo "</tr>\n<tr>\n";
                 $column->renderHeaderCell();
             }
@@ -74,7 +134,7 @@ class HypGridView extends CGridView
             echo "<tr class=\"{$this->filterCssClass}\">\n";
             $i = 0;
             foreach ($this->columns as $column){
-                if ($this->isHyphenation($i++))
+                if ($this->isHyphenation(++$i))
                      echo "</tr>\n<tr class=\"{$this->filterCssClass}\">\n";
                 $column->renderFilterCell();
             }
@@ -94,7 +154,7 @@ class HypGridView extends CGridView
                 echo "<tr>\n";
                 $i = 0;
                 foreach ($this->columns as $column){
-                    if ($this->isHyphenation($i++))
+                    if ($this->isHyphenation(++$i))
                         echo "</tr>\n<tr>\n";
                     $column->renderFooterCell();
                 }
@@ -140,8 +200,8 @@ class HypGridView extends CGridView
         echo CHtml::openTag('tr', $htmlOptions)."\n";
         $i=0;
         foreach($this->columns as $column){
-            if($this->isHyphenation($i++))
-                echo "</tr>\n".CHtml::openTag('tr', $htmlOptions)."\n";
+            if($this->isHyphenation(++$i))
+                echo "</tr>\n".CHtml::openTag('tr', $this->HyphenationHtmlOptions($row,$i,$htmlOptions))."\n";
             $column->renderDataCell($row);
         }
         echo "</tr>\n";
