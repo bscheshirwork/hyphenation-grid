@@ -43,8 +43,8 @@ class HypGridView extends CGridView
             $htmlOptionsExpression = $this->hyphenationRowHtmlOptionsExpression;
             $cssClassExpression = $this->hyphenationRowCssClassExpression;
         } else {
-            $htmlOptionsExpression = $this->hyphenationRowHtmlOptionsExpression[$col];
-            $cssClassExpression = $this->hyphenationRowCssClassExpression[$col];
+            $htmlOptionsExpression = isset($this->hyphenationRowHtmlOptionsExpression[$col])?$this->hyphenationRowHtmlOptionsExpression[$col]:null;
+            $cssClassExpression = isset($this->hyphenationRowCssClassExpression[$col])?$this->hyphenationRowCssClassExpression[$col]:null;
         }
         if ($htmlOptionsExpression !== null) {
             $data = $this->dataProvider->data[$row];
@@ -201,4 +201,3 @@ class HypGridView extends CGridView
         echo "</tr>\n";
     }
 }
-
