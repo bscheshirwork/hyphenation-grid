@@ -38,7 +38,7 @@ hyphenation-grid
 а значениями - применяемые для этого переноса опции.
 ```php
     'hyphenationRowCssClassExpression'=>[
-        11=>'["display"=>"none"]', //обратите внимание на вид кавычек - строка будет передана в evaluateExpression
+        2=>'($row % 2)?"hidden":""', //обратите внимание на вид кавычек - строка будет передана в evaluateExpression
     ],
 ```
 <br>
