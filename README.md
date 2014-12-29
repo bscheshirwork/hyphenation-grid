@@ -26,11 +26,21 @@ hyphenation-grid
 'hyphenationRowHtmlOptionsExpression' 
 аналог rowHtmlOptionsExpression, применяется к tr перенесённой строки. Если передан hyphenationOnCount - берётся для каждого переноса. Иначе требуется передать массив, где ключами будут номера колонок, по которым идёт перенос,
 а значениями - применяемые для этого переноса опции.
+```php
+'hyphenationRowHtmlOptionsExpression'=>[
+	2=>'["id"=>"second_{$row}"]', //обратите внимание на вид кавычек - строка будет передана в evaluateExpression
+],
+```
 <br>
 
 'hyphenationRowCssClassExpression'
 аналог rowCssClassExpression, применяется к tr перенесённой строки. Если передан hyphenationOnCount - берётся для каждого переноса. Иначе требуется передать массив, где ключами будут номера колонок, по которым идёт перенос,
 а значениями - применяемые для этого переноса опции.
+```php
+    'hyphenationRowCssClassExpression'=>[
+        11=>'["display"=>"none"]', //обратите внимание на вид кавычек - строка будет передана в evaluateExpression
+    ],
+```
 <br>
 
 'hyphenationDisableRowCssClass'
@@ -62,7 +72,7 @@ $controller = $this;
 	'hyphenationColumns'=>[2,3],
 	//'hyphenationOnCount'=>2,
 	'hyphenationRowHtmlOptionsExpression'=>[
-		2=>['id'=>'"second_{$data->id}"']
+		2=>'["id"=>"second_{$row}"]'
 	],
 	'hyphenationRowCssClassExpression'=>[
 		2=>['display'=>'none']
